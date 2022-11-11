@@ -8,8 +8,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlin.random.Random
 
-class CameraPermissionHelper {
-    private val permissions = listOf(Manifest.permission.CAMERA)
+class PermissionHelper {
+
+    private val permissionsForCamera = listOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     private val permissionsRequestCode = Random.nextInt(0, 10000)
 
     fun requestCameraPermission(
@@ -20,10 +24,10 @@ class CameraPermissionHelper {
         if (!hasPermissions(activity)) {
             permissionDenied.invoke()
             ActivityCompat.requestPermissions(
-                activity, permissions.toTypedArray(), permissionsRequestCode)
+                activity, permissionsForCamera.toTypedArray(), permissionsRequestCode)
         } else permissionGranted.invoke()
     }
-    private fun hasPermissions(context: Context) = permissions.all {
+    private fun hasPermissions(context: Context) = permissionsForCamera.all {
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
 }

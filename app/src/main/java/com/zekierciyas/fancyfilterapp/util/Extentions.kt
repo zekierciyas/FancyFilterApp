@@ -1,11 +1,16 @@
 package com.zekierciyas.fancyfilterapp.util
 
+import android.R.drawable
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.*
 import android.net.Uri
 import android.os.ParcelFileDescriptor
+import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewGroup.VISIBLE
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import com.zekierciyas.fancyfilterapp.R
 import java.io.FileDescriptor
 import java.io.IOException
 
@@ -53,4 +58,30 @@ fun Bitmap.resizeTheBitmap(maxSize: Int): Bitmap? {
         width = (height * bitmapRatio).toInt()
     }
     return Bitmap.createScaledBitmap(this, width, height, true)
+}
+
+fun Fragment.runUIThread() = kotlin.runCatching {
+    this.requireActivity().runOnUiThread {
+
+    }
+}
+
+fun View.show() {
+    if (this.visibility == View.VISIBLE) return
+    this.visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    if (this.visibility == View.INVISIBLE) return
+    this.visibility = View.INVISIBLE
+}
+
+fun View.disableClickable() {
+    if (!this.isClickable) return
+    this.isClickable = false
+}
+
+fun View.enableClickable() {
+    if (this.isClickable) return
+    this.isClickable = true
 }

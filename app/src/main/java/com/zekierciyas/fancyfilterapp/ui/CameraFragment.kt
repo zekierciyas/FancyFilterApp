@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.zekierciyas.fancyfilterapp.R
 import com.zekierciyas.fancyfilterapp.databinding.FragmentCameraBinding
 import com.zekierciyas.fancyfilterapp.model.FilterSelectionNavModel
-import com.zekierciyas.fancyfilterapp.util.CameraPermissionHelper
+import com.zekierciyas.fancyfilterapp.util.PermissionHelper
 import com.zekierciyas.library.model.SimpleCameraStateModel
 import com.zekierciyas.library.observe.Observers
 import com.zekierciyas.library.observe.SimpleCameraState
@@ -19,7 +19,7 @@ class CameraFragment: Fragment(R.layout.fragment_camera) {
 
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = _binding!!
-    private val cameraPermissionHelper: CameraPermissionHelper by lazy { CameraPermissionHelper() }
+    private val permissionHelper: PermissionHelper by lazy { PermissionHelper() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +32,7 @@ class CameraFragment: Fragment(R.layout.fragment_camera) {
 
     override fun onResume() {
         super.onResume()
-        cameraPermissionHelper.requestCameraPermission(
+        permissionHelper.requestCameraPermission(
             requireActivity(),
             permissionDenied = {
 

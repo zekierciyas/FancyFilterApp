@@ -1,8 +1,10 @@
 package com.zekierciyas.fancyfilterapp.repository
 
+import android.content.Context
 import android.graphics.Bitmap
 import com.zekierciyas.fancyfilterlib.FancyFilter
 import com.zekierciyas.fancyfilterlib.FancyFilters
+import java.lang.Exception
 import java.util.concurrent.Flow
 
 interface FilterProcessor {
@@ -17,5 +19,12 @@ interface FilterProcessor {
         bitmap: Bitmap?,
         effect: Int,
         onComplete: (effectedBitmap: Bitmap) -> Unit
+    )
+
+    suspend fun saveBitmapToGallery(
+        context: Context,
+        bitmap: Bitmap,
+        onComplete: () -> Unit,
+        onError: (e: Exception) -> Unit
     )
 }

@@ -1,12 +1,14 @@
 package com.zekierciyas.fancyfilterapp.ui
 
-import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zekierciyas.fancyfilterapp.R
@@ -15,12 +17,9 @@ import com.zekierciyas.fancyfilterapp.databinding.FragmentFilterSelectorBinding
 import com.zekierciyas.fancyfilterapp.model.SelectableEffects
 import com.zekierciyas.fancyfilterapp.repository.FilterProcessorImp
 import com.zekierciyas.fancyfilterapp.ui.common.activityViewModelBuilder
+import com.zekierciyas.fancyfilterapp.util.*
 import com.zekierciyas.fancyfilterlib.FancyFilter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class FilterSelectorFragment: Fragment(R.layout.fragment_filter_selector), EffectSelectionAdapter.ItemClickListener {
@@ -33,7 +32,9 @@ class FilterSelectorFragment: Fragment(R.layout.fragment_filter_selector), Effec
         FilterSelectorViewModel(filterRepository = FilterProcessorImp(
             fancyFilter = FancyFilter
             .Builder()
-            .withContext(requireContext())))
+            .withContext(requireContext()),
+        MediaStorageHelper()
+        ))
     }
 
     override fun onCreateView(
@@ -58,16 +59,61 @@ class FilterSelectorFragment: Fragment(R.layout.fragment_filter_selector), Effec
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.listOfFilters.observe(viewLifecycleOwner) {
-                requireActivity().runOnUiThread {
-                    setupRecyclerView(it)
+
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            when(it) {
+                is FilterSelectorUiState.OnSuccess ->{
+
+                    when(it.event) {
+                        is FilterSelectorEvent.FilteredBitmap -> {
+                            Timber.i("Filtered bitmap is ready")
+                            requireActivity().runOnUiThread {
+                                binding.filteredImageView.setImageBitmap(it.event.filteredBitmap)
+                            }
+                        }
+
+                        is FilterSelectorEvent.ListOfFilters -> {
+                            Timber.i("Lis of filters to show on screen is ready")
+                            requireActivity().runOnUiThread {
+                                setupRecyclerView(it.event.listOfFilters)
+                            }
+                        }
+
+                        is FilterSelectorEvent.AppliedFilterSaved -> {
+                            Timber.i("Applied filter is saved")
+                            requireActivity().runOnUiThread {
+                                binding.progressLoader.hide()
+                                binding.applyFiltering.enableClickable()
+                            }
+                            Toast.makeText(requireContext(), "Image is saved", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 }
+
+                is FilterSelectorUiState.OnError -> {
+                    Timber.i("UI state is on error")
+                    Toast.makeText(requireContext(), "Error: ${it.errorMessage}", Toast.LENGTH_LONG).show()
+                }
+
+                is FilterSelectorUiState.Loading -> {
+                    Timber.i("UI state is loading")
+                    requireActivity().runOnUiThread {
+                        binding.progressLoader.show()
+                        binding.applyFiltering.disableClickable()
+                    }
+                }
+                else -> {
+
+                }
+            }
         }
 
-        viewModel.filteredBitmap.observe(viewLifecycleOwner) {
-            requireActivity().runOnUiThread {
-                binding.filteredImageView.setImageBitmap(it)
-            }
+        binding.closeFiltering.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.applyFiltering.setOnClickListener {
+            viewModel.saveImage(requireContext())
         }
     }
 

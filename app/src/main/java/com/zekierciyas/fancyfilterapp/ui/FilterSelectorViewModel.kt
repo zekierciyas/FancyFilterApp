@@ -13,6 +13,7 @@ import com.zekierciyas.fancyfilterapp.util.rotateHorizontallyIfNeeded
 import com.zekierciyas.fancyfilterapp.util.uriToBitmap
 import com.zekierciyas.fancyfilterlib.FancyFilters
 import kotlinx.coroutines.*
+import java.util.logging.Filter
 
 class FilterSelectorViewModel constructor(
     private val filterRepository: FilterProcessorImp ) : ViewModel() {
@@ -31,12 +32,12 @@ class FilterSelectorViewModel constructor(
         FancyFilters.NO_57
     )
     private var job: Job = Job()
-    private var scope = CoroutineScope(Dispatchers.Main + job)
+    private var scope = CoroutineScope(Dispatchers.IO + job)
 
-    private var _listOfFilters : MutableLiveData<List<SelectableEffects>> = MutableLiveData()
-    val listOfFilters: LiveData<List<SelectableEffects>> get() = _listOfFilters
-    private var _filteredBitmap : MutableLiveData<Bitmap?> = MutableLiveData()
-    val filteredBitmap: LiveData<Bitmap?> get() = _filteredBitmap
+    private var _filteredBitmap : Bitmap? = null
+
+    private var _uiState : MutableLiveData<FilterSelectorUiState?> = MutableLiveData()
+    val uiState: LiveData<FilterSelectorUiState?> get() = _uiState
 
     private var bitmapOrj: Bitmap? = null
 
@@ -47,7 +48,7 @@ class FilterSelectorViewModel constructor(
                 it.forEach { filteredBitmap ->
                     listOfAppliedFilter.add(SelectableEffects(filteredBitmap))
                 }
-                _listOfFilters.postValue(listOfAppliedFilter)
+                _uiState.postValue(FilterSelectorUiState.OnSuccess(FilterSelectorEvent.ListOfFilters(listOfAppliedFilter)))
             })
         }
     }
@@ -74,8 +75,20 @@ class FilterSelectorViewModel constructor(
     fun applySelectedFilter(position: Int) {
         scope.launch {
             applySelectedFilter(position){
-                _filteredBitmap.postValue(it)
+                it?.let {
+                    _filteredBitmap = it
+                    _uiState.postValue(FilterSelectorUiState.OnSuccess(FilterSelectorEvent.FilteredBitmap(it)))
+                }?: run{
+                    _uiState.postValue(FilterSelectorUiState.OnError("Filter could not applied"))
+                }
             }
+        }
+    }
+
+    fun saveImage(context: Context) {
+        scope.launch {
+            _uiState.postValue(FilterSelectorUiState.Loading)
+            saveBitmapToGallery(context = context)
         }
     }
 
@@ -87,5 +100,20 @@ class FilterSelectorViewModel constructor(
                 jobDone.invoke(it)
             }
         )
+    }
+
+    private suspend fun saveBitmapToGallery(context: Context) {
+        _filteredBitmap?.let {
+            filterRepository.saveBitmapToGallery(
+                context,
+                it,
+                onComplete = {
+                    _uiState.postValue(FilterSelectorUiState.OnSuccess(FilterSelectorEvent.AppliedFilterSaved))
+
+                },
+                onError = { error ->
+                    _uiState.postValue(FilterSelectorUiState.OnError(error.localizedMessage!!))
+                })
+        }
     }
 }

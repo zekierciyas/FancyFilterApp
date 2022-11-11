@@ -1,16 +1,20 @@
 package com.zekierciyas.fancyfilterapp.repository
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
+import com.zekierciyas.fancyfilterapp.util.MediaStorageHelper
 import com.zekierciyas.fancyfilterlib.FancyFilter
 import com.zekierciyas.fancyfilterlib.FancyFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class FilterProcessorImp constructor(
-    private val fancyFilter: FancyFilter.Builder) : FilterProcessor{
+    private val fancyFilter: FancyFilter.Builder,
+    private val mediaStorageHelper: MediaStorageHelper) : FilterProcessor{
 
     @WorkerThread
     override suspend fun applyFilters(
@@ -36,5 +40,20 @@ class FilterProcessorImp constructor(
             .applyFilter {
                 onComplete.invoke(it)
             }
+    }
+
+    @WorkerThread
+    override suspend fun saveBitmapToGallery(
+        context: Context,
+        bitmap: Bitmap,
+        onComplete: () -> Unit,
+        onError: (e: Exception) -> Unit
+    ) {
+        mediaStorageHelper.saveMediaToStorage(
+            context = context,
+            bitmap = bitmap,
+            onComplete = onComplete,
+            onError = onError
+        )
     }
 }

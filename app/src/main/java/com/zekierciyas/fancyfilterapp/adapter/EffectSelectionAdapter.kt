@@ -1,15 +1,14 @@
 package com.zekierciyas.fancyfilterapp.adapter
 
 import android.content.Context
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zekierciyas.fancyfilterapp.R
 import com.zekierciyas.fancyfilterapp.model.SelectableEffects
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class EffectSelectionAdapter internal constructor(
@@ -20,6 +19,8 @@ class EffectSelectionAdapter internal constructor(
     private val mEffects: List<SelectableEffects> = effects
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mClickListener: ItemClickListener? = null
+    private var previousSelected: Int? = null
+    private var viewHolder: ViewHolder? = null
 
     // inflates the row layout from xml when needed
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,8 +30,22 @@ class EffectSelectionAdapter internal constructor(
 
     // binds the data to the view and textview in each row
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        viewHolder = holder
         val effect = mEffects[position].effect
         holder.myView.setImageBitmap(effect)
+
+        previousSelected?.let {
+            if (position == it) {
+                holder.myView.also {
+                    it.borderWidth = 8
+                    it.borderColor = ContextCompat.getColor(holder.myView.context, R.color.white)
+                }
+            } else {
+                // Removing previous selected filter's border, when another filter is selected
+                holder.myView.borderWidth = 0
+
+            }
+        }
     }
 
     // total number of rows
@@ -41,9 +56,11 @@ class EffectSelectionAdapter internal constructor(
     // stores and recycles views as they are scrolled off screen
     inner class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var myView: ImageView = itemView.findViewById(R.id.colorView)
+        var myView: CircleImageView = itemView.findViewById(R.id.colorView)
         override fun onClick(view: View) {
             if (mClickListener != null) mClickListener!!.onItemClick(view, adapterPosition)
+            previousSelected = adapterPosition
+            notifyDataSetChanged()
         }
 
         init {

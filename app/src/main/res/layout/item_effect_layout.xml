@@ -2,10 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingVertical="6dp"
     android:paddingHorizontal="6dp">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/colorView"
         android:scaleType="centerCrop"
         android:layout_width="80dp"
