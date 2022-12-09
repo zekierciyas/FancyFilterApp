@@ -12,7 +12,7 @@ A simple image filtering and saving application that combines the easy use of th
 - [DataBinding](https://developer.android.com/topic/libraries/data-binding)
 - [ConstraintLayout](https://developer.android.com/reference/androidx/constraintlayout/widget/ConstraintLayout)
 
-# MIT License
+## MIT License
 ```xml
 
 Copyright (c) 2022 zekierciyas
