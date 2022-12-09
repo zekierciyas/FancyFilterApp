@@ -13,6 +13,7 @@ import com.zekierciyas.fancyfilterapp.util.rotateHorizontallyIfNeeded
 import com.zekierciyas.fancyfilterapp.util.uriToBitmap
 import com.zekierciyas.fancyfilterlib.FancyFilters
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.logging.Filter
 
 class FilterSelectorViewModel constructor(
@@ -93,13 +94,17 @@ class FilterSelectorViewModel constructor(
     }
 
    private suspend fun applySelectedFilter(position: Int, jobDone: (Bitmap?) -> Unit) {
-        filterRepository.applyFilter(
-            bitmapOrj,
-            filterList[position],
-            onComplete = {
-                jobDone.invoke(it)
-            }
-        )
+       try {
+           filterRepository.applyFilter(
+               bitmapOrj,
+               filterList[position],
+               onComplete = {
+                   jobDone.invoke(it)
+               }
+           )
+       } catch (e: ArrayIndexOutOfBoundsException) {
+           Timber.e("Multiple selected filter caused error of ${e.message}")
+       }
     }
 
     private suspend fun saveBitmapToGallery(context: Context) {
