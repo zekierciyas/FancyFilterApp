@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="com.zekierciyas.fancyfilterapp.ui.CameraFragment"
+        android:name="com.zekierciyas.fancyfilterapp.ui.camera.CameraFragment"
         android:label="CameraFragment" >
         <action
             android:id="@+id/action_cameraFragment_to_filterSelectorFragment"
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/filterSelectorFragment"
-        android:name="com.zekierciyas.fancyfilterapp.ui.FilterSelectorFragment"
+        android:name="com.zekierciyas.fancyfilterapp.ui.filter_selector.FilterSelectorFragment"
         android:label="FilterSelectorFragment" >
         <argument
             android:name="arg"

@@ -1,8 +1,6 @@
-package com.zekierciyas.fancyfilterapp.ui
+package com.zekierciyas.fancyfilterapp.ui.filter_selector
 
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.zekierciyas.fancyfilterapp.R
 import com.zekierciyas.fancyfilterapp.adapter.EffectSelectionAdapter
 import com.zekierciyas.fancyfilterapp.databinding.FragmentFilterSelectorBinding
+import com.zekierciyas.fancyfilterapp.di.LibraryModule
 import com.zekierciyas.fancyfilterapp.model.SelectableEffects
 import com.zekierciyas.fancyfilterapp.repository.FilterProcessorImp
+import com.zekierciyas.fancyfilterapp.ui.FilterSelectorEvent
+import com.zekierciyas.fancyfilterapp.ui.FilterSelectorUiState
 import com.zekierciyas.fancyfilterapp.ui.common.activityViewModelBuilder
 import com.zekierciyas.fancyfilterapp.util.*
 import com.zekierciyas.fancyfilterlib.FancyFilter
@@ -29,12 +30,7 @@ class FilterSelectorFragment: Fragment(R.layout.fragment_filter_selector), Effec
     private var adapter: EffectSelectionAdapter? = null
     private val args: FilterSelectorFragmentArgs by navArgs()
     private val viewModel: FilterSelectorViewModel by activityViewModelBuilder {
-        FilterSelectorViewModel(filterRepository = FilterProcessorImp(
-            fancyFilter = FancyFilter
-            .Builder()
-            .withContext(requireContext()),
-        MediaStorageHelper()
-        ))
+        FilterSelectorViewModel(filterRepository = LibraryModule.filterProcessorImp)
     }
 
     override fun onCreateView(

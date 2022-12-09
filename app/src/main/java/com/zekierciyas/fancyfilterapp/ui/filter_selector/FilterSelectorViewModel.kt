@@ -1,4 +1,4 @@
-package com.zekierciyas.fancyfilterapp.ui
+package com.zekierciyas.fancyfilterapp.ui.filter_selector
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zekierciyas.fancyfilterapp.model.SelectableEffects
 import com.zekierciyas.fancyfilterapp.repository.FilterProcessorImp
+import com.zekierciyas.fancyfilterapp.ui.FilterSelectorEvent
+import com.zekierciyas.fancyfilterapp.ui.FilterSelectorUiState
 import com.zekierciyas.fancyfilterapp.util.resizeTheBitmap
 import com.zekierciyas.fancyfilterapp.util.rotateHorizontallyIfNeeded
 import com.zekierciyas.fancyfilterapp.util.uriToBitmap
 import com.zekierciyas.fancyfilterlib.FancyFilters
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.util.logging.Filter
 
 class FilterSelectorViewModel constructor(
     private val filterRepository: FilterProcessorImp ) : ViewModel() {
@@ -49,7 +50,13 @@ class FilterSelectorViewModel constructor(
                 it.forEach { filteredBitmap ->
                     listOfAppliedFilter.add(SelectableEffects(filteredBitmap))
                 }
-                _uiState.postValue(FilterSelectorUiState.OnSuccess(FilterSelectorEvent.ListOfFilters(listOfAppliedFilter)))
+                _uiState.postValue(
+                    FilterSelectorUiState.OnSuccess(
+                        FilterSelectorEvent.ListOfFilters(
+                            listOfAppliedFilter
+                        )
+                    )
+                )
             })
         }
     }
@@ -78,7 +85,13 @@ class FilterSelectorViewModel constructor(
             applySelectedFilter(position){
                 it?.let {
                     _filteredBitmap = it
-                    _uiState.postValue(FilterSelectorUiState.OnSuccess(FilterSelectorEvent.FilteredBitmap(it)))
+                    _uiState.postValue(
+                        FilterSelectorUiState.OnSuccess(
+                            FilterSelectorEvent.FilteredBitmap(
+                                it
+                            )
+                        )
+                    )
                 }?: run{
                     _uiState.postValue(FilterSelectorUiState.OnError("Filter could not applied"))
                 }

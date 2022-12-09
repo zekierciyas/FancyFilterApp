@@ -1,4 +1,4 @@
-package com.zekierciyas.fancyfilterapp.ui
+package com.zekierciyas.fancyfilterapp.ui.camera
 
 import android.net.Uri
 import android.os.Bundle
@@ -66,9 +66,9 @@ class CameraFragment: Fragment(R.layout.fragment_camera) {
             if (savedUri != null) {
                 println("Photo taken successfully")
                 requireActivity().runOnUiThread {
-                    val action =
-                        CameraFragmentDirections
-                            .actionCameraFragmentToFilterSelectorFragment(FilterSelectionNavModel(savedUri))
+                    val action = CameraFragmentDirections.actionCameraFragmentToFilterSelectorFragment(
+                            FilterSelectionNavModel(savedUri)
+                        )
                     findNavController().navigate(action)
                 }
             }
