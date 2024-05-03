@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_background_color">@color/white</color>
+    <color name="app_font_color">#000000</color>
+    <color name="hint_color">#8E8888</color>
+    <color name="error_color">#CD2626</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#4C4343</color>
+</resources>

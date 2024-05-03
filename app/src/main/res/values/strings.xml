@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_camera_never_askagain">Camera permissions denied</string>
+    <string name="permission_camera_denied">Permission denied\n</string>
+</resources>
