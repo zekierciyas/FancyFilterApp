@@ -7,8 +7,8 @@
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:background="@color/background_gray"
     android:layout_width="match_parent"
+    android:background="@color/gray"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -17,16 +17,16 @@
         android:id="@+id/filtered_image_view"
         app:imageAsBitmap="@{arg.uri}"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/background_gray_low"
+        android:background="@color/gray"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/close_filtering"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_camera_close"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="8dp"
+        android:src="@drawable/baseline_close_24"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="@id/guideline_left"
         app:layout_constraintTop_toTopOf="@id/guideline_top"
@@ -35,10 +35,11 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/apply_filtering"
         app:layout_constraintWidth_percent="0.12"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="8dp"
         app:layout_constraintDimensionRatio="1:1"
-        android:src="@drawable/ic_filter_done"
+        android:src="@drawable/file_save"
         app:layout_constraintEnd_toEndOf="@id/guideline_right"
         app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
@@ -56,7 +57,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:background="@color/background_gray"
+        android:background="@drawable/rounded_bg"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 

@@ -1,26 +1,32 @@
 package com.zekierciyas.fancyfilterapp.ui.camera
 
+import android.Manifest
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.zekierciyas.fancyfilterapp.R
 import com.zekierciyas.fancyfilterapp.databinding.FragmentCameraBinding
 import com.zekierciyas.fancyfilterapp.model.FilterSelectionNavModel
-import com.zekierciyas.fancyfilterapp.util.PermissionHelper
 import com.zekierciyas.library.model.SimpleCameraStateModel
 import com.zekierciyas.library.observe.Observers
 import com.zekierciyas.library.observe.SimpleCameraState
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnNeverAskAgain
+import permissions.dispatcher.OnPermissionDenied
+import permissions.dispatcher.OnShowRationale
+import permissions.dispatcher.PermissionRequest
+import permissions.dispatcher.RuntimePermissions
 
+@RuntimePermissions
 class CameraFragment: Fragment(R.layout.fragment_camera) {
 
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = _binding!!
-    private val permissionHelper: PermissionHelper by lazy { PermissionHelper() }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,27 +36,36 @@ class CameraFragment: Fragment(R.layout.fragment_camera) {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        permissionHelper.requestCameraPermission(
-            requireActivity(),
-            permissionDenied = {
-
-            },
-            permissionGranted = {
-                binding.cameraView
-                    .observeCameraState(observerCameraState)
-                    .imageCapture(this) {
-                        {
-                            // Could be used to check if camera ready to take photo
-                        }
-                    }
+    @NeedsPermission(Manifest.permission.CAMERA)
+    fun initCameraView() {
+        binding.cameraView
+            .observeCameraState(observerCameraState)
+            .imageCapture(this) {
+                {
+                    // Could be used to check if camera ready to take photo
+                }
             }
-        )
+    }
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    fun showRationaleForCamera(request: PermissionRequest) {
+
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    fun onCameraDenied() {
+        Toast.makeText(requireActivity(), R.string.permission_camera_denied, Toast.LENGTH_SHORT).show()
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    fun onCameraNeverAskAgain() {
+        Toast.makeText(requireActivity(), R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initCameraView()
 
         binding.captureButton.setOnClickListener {
             binding.cameraView.takePhoto(observerImageCapture)

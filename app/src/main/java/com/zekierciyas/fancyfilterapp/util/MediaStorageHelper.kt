@@ -22,7 +22,7 @@ class MediaStorageHelper {
         onError: (e: Exception) -> Unit
     ) {
         try {
-            val folderName = context.getString(R.string.app_name)
+            val folderName = "fancy_filter"
 
             if (Build.VERSION.SDK_INT >= 29) {
                 val values = contentValues()

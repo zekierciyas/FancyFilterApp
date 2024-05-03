@@ -2,6 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingHorizontal="6dp">
 
@@ -9,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/card_view"
+        android:theme="@style/Theme.MaterialComponents.Light"
         android:layout_gravity="center_vertical"
         app:cardCornerRadius="8dp">
 

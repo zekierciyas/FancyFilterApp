@@ -11,10 +11,8 @@
         <action
             android:id="@+id/action_cameraFragment_to_filterSelectorFragment"
             app:destination="@id/filterSelectorFragment"
-            app:enterAnim="@anim/slide_up"
             app:exitAnim="@null"
-            app:popEnterAnim="@null"
-            app:popExitAnim="@anim/slide_down" />
+            app:popEnterAnim="@null" />
     </fragment>
     <fragment
         android:id="@+id/filterSelectorFragment"
